@@ -37,30 +37,7 @@ Open `index.html` in any browser. Everything renders offline; the only external 
 
 The page is dark-only by design, so it sits with the rendered plates rather than framing them. The figures are dense — each one links to its full-size PNG for reading at 300 dpi.
 
-A published copy lives at <https://claude.ai/artifact/UHEakVbz5RZUG3UH34Hi9L> (private; it has to be shared from the page's Share menu before anyone else can open it).
 
 ---
 
-## Where it comes from
 
-Written from three theory documents in the project root:
-
-- `The Asymmetric Derivation — Why Abstraction Is Free and Specification Must Be Paid For… .md`
-- `The Funded Descent — Why Every Step From Logical to Physical Architecture Is Priced by the Dimensionality at Which It Is Taken… .md`
-- `The Welded Interior — Why Connection Mass Per Unit of Branching Volume Is the Internal Metric of Architecture… .md`
-
-The site keeps each document's section order but drops the corpus vocabulary — *verdict* reads as evidence, *route count* as options, *trade space* as room to move. The theory documents hold the full terminology; this is the plain-language pass.
-
-Three of the four figures are generated, and can be re-rendered from the project root:
-
-```
-python asymmetric_derivation_diagram.py
-python funded_descent_diagram.py
-python welded_interior_diagram.py
-```
-
-Each writes a 300 dpi PNG beside its script; copy the result into `img/` under the name above to update the site. The fourth, `axis-hero.png`, is an illustration rather than a generated plate.
-
-## Upstream
-
-Mechanism 03 draws its interior metric from three theories in `CLAUDE ARCHITECTURE/`: **The Resolution Band** (coupling depth), **The Sampling Product** (scope × density across coupled constraints), and **Structural Density, the Generator, and Downward Reorganization** (connection mass per unit of branching volume). Mechanism 02 sits on **Unified Theory of Dimensional Sequencing** and **The Earned Axis**.
