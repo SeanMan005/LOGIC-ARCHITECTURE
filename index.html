@@ -1,0 +1,639 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html { color-scheme: dark; }
+  body { margin: 0; }
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+</style>
+<title>The Architectural Axis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+/* Layout: one reading column on an instrument-panel ground; each theory is a
+   plate — figure first, then the mechanism in numbered steps. Dark only, to
+   sit with the rendered diagrams. */
+:root {
+  color-scheme: dark;
+
+  --bg:      #0a0d14;
+  --panel:   #121726;
+  --panel-2: #161d33;
+  --line:    #242d44;
+  --fg:      #e9edf7;
+  --mute:    #8793ad;
+
+  --mass:  #5fd0a0;   /* free direction, evidence, load-bearing */
+  --cost:  #e0556b;   /* the paid direction, refused moves */
+  --vol:   #3aa0c9;   /* the logical layer, options still open */
+  --gold:  #f4c95d;   /* the physical layer, density */
+  --viol:  #9b8cf0;   /* the mechanism itself */
+
+  --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --step--1: 0.78rem;
+  --step-0:  1rem;
+  --step-1:  1.22rem;
+  --step-2:  1.65rem;
+  --step-3:  2.4rem;
+  --step-4:  clamp(2.6rem, 7vw, 4.2rem);
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--body);
+  font-size: var(--step-0);
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  z-index: 10;
+  background: var(--bg);
+}
+
+.wrap {
+  max-width: 68rem;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* ---------- top bar ---------- */
+.bar {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 9;
+  background: rgba(10, 13, 20, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+.bar .wrap {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  flex-wrap: wrap;
+  padding-block: 0.62rem;
+}
+.mark {
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg);
+  white-space: nowrap;
+}
+.bar nav {
+  display: flex;
+  gap: 0.95rem;
+  flex-wrap: wrap;
+  margin-left: auto;
+  min-width: 0;
+}
+.bar nav a {
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  color: var(--mute);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 1px;
+}
+.bar nav a:hover { color: var(--fg); border-bottom-color: var(--viol); }
+
+a:focus-visible, .fig a:focus-visible {
+  outline: 2px solid var(--viol);
+  outline-offset: 3px;
+}
+
+/* ---------- hero ---------- */
+.hero { padding-block: clamp(2.6rem, 7vw, 5rem) 1.6rem; }
+.eyebrow {
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+h1 {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: var(--step-4);
+  line-height: 0.98;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+  margin: 0.55rem 0 0;
+}
+.lede {
+  max-width: 44rem;
+  font-size: var(--step-1);
+  color: var(--fg);
+  margin-top: 1.3rem;
+}
+.lede em { color: var(--gold); font-style: normal; }
+
+.axisline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+  margin-top: 2rem;
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  color: var(--mute);
+}
+.axisline b { color: var(--vol); font-weight: 500; }
+.axisline i { color: var(--gold); font-style: normal; }
+.axisline span { color: var(--line); }
+
+
+.hero-fig {
+  margin: 2.4rem 0 0.6rem;
+  background: #0b0e16;
+  border: 1px solid var(--line);
+}
+.hero-fig img { display: block; width: 100%; height: auto; }
+.hero-fig figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.1rem;
+  align-items: baseline;
+  border-top: 1px solid var(--line);
+  padding: 0.7rem 0.95rem;
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  color: var(--mute);
+}
+.hero-fig figcaption b { color: var(--vol); font-weight: 500; }
+.hero-fig figcaption i { color: var(--gold); font-style: normal; }
+.hero-fig figcaption a { color: var(--vol); text-decoration: none; margin-left: auto; white-space: nowrap; }
+.hero-fig figcaption a:hover { color: var(--fg); }
+
+/* ---------- plates ---------- */
+.plate { padding-block: clamp(2.8rem, 6vw, 4.4rem) 0; scroll-margin-top: 4.5rem; }
+.plate + .plate { border-top: 1px solid var(--line); }
+.plate-head { max-width: 50rem; }
+.plate h2 {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: var(--step-3);
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  margin: 0.4rem 0 0;
+}
+.claim {
+  font-size: var(--step-1);
+  color: var(--mute);
+  margin-top: 0.9rem;
+  max-width: 42rem;
+}
+.claim strong { color: var(--fg); font-weight: 500; }
+
+.fig {
+  margin: 2.1rem 0 0;
+  background: #0b0e16;
+  border: 1px solid var(--line);
+}
+.fig img { display: block; width: 100%; height: auto; }
+.fig figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.1rem;
+  align-items: baseline;
+  border-top: 1px solid var(--line);
+  padding: 0.7rem 0.95rem;
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  color: var(--mute);
+}
+.fig figcaption a { color: var(--vol); text-decoration: none; margin-left: auto; white-space: nowrap; }
+.fig figcaption a:hover { color: var(--fg); }
+
+.steps {
+  max-width: 42rem;
+  margin-top: 2.6rem;
+}
+.step { min-width: 0; }
+.step + .step { margin-top: 1.9rem; }
+.step h3 {
+  font-family: var(--body);
+  font-weight: 600;
+  font-size: var(--step-0);
+  color: var(--fg);
+  margin: 0 0 0.45rem;
+}
+.step h3::before {
+  content: "";
+  display: inline-block;
+  width: 0.62rem;
+  height: 1px;
+  vertical-align: 0.3em;
+  margin-right: 0.55rem;
+  background: var(--tint);
+}
+.step p { margin: 0; color: var(--mute); }
+.step p + p { margin-top: 0.85rem; }
+.step b { color: var(--fg); font-weight: 500; }
+
+.takeaway {
+  margin: 2.6rem 0 0;
+  border-left: 2px solid var(--tint);
+  background: var(--panel);
+  padding: 1.1rem 1.3rem;
+  max-width: 50rem;
+}
+.takeaway p { margin: 0; font-size: var(--step-1); line-height: 1.5; text-wrap: pretty; }
+.takeaway .lab {
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tint);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+/* ---------- close ---------- */
+.close { padding-block: clamp(2.8rem, 6vw, 4.4rem); border-top: 1px solid var(--line); scroll-margin-top: 4.5rem; }
+.stack {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 1rem;
+  margin-top: 1.8rem;
+}
+.stack div {
+  min-width: 0;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  padding: 1rem 1.1rem;
+}
+.stack .q {
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  color: var(--tint);
+  display: block;
+  margin-bottom: 0.4rem;
+}
+.stack p { margin: 0; color: var(--mute); font-size: var(--step--1); line-height: 1.55; }
+.stack strong { color: var(--fg); font-weight: 500; }
+
+.rules { margin-top: 2.4rem; max-width: 50rem; }
+.rules h3 {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: var(--step-2);
+  margin: 0 0 1rem;
+  letter-spacing: -0.015em;
+}
+.rules ol { margin: 0; padding-left: 1.3rem; }
+.rules li { margin-bottom: 0.7rem; color: var(--mute); }
+.rules li b { color: var(--fg); font-weight: 500; }
+
+footer {
+  border-top: 1px solid var(--line);
+  padding-block: 1.4rem 2.4rem;
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  color: var(--mute);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="wrap">
+    <span class="mark">The Architectural Axis</span>
+    <nav>
+      <a href="#one">01 · Direction</a>
+      <a href="#two">02 · Price</a>
+      <a href="#three">03 · Interior</a>
+      <a href="#together">Together</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="wrap hero">
+    <span class="eyebrow">Three mechanisms · logical → physical architecture</span>
+    <h1>What it costs to turn a WHAT into a HOW</h1>
+    <p class="lede">
+      Architecture states what a system must do. Design states how it will do it. Moving between
+      those two layers looks like one smooth motion, and it is not: going up costs nothing, going
+      down has to be bought, and <em>what you buy it with is evidence</em>. These three mechanisms
+      describe the direction of that move, its price, and what the structure is made of at each end.
+    </p>
+
+    <figure class="hero-fig">
+      <img src="img/axis-hero.png"
+           alt="The architectural axis: a glowing layered node-lattice above labelled architecture, the logical structure, with an upward blue arrow marked subtraction; below it a lit cutaway building model labelled design, the physical expression, with a downward amber arrow marked exclusion. Side panels list what gets removed going up and what must be added coming down.">
+      <figcaption>
+        <span><b>Up — subtraction</b>, needs nothing new  ·  <i>Down — exclusion</i>, needs information the abstraction never had</span>
+        <a href="img/axis-hero.png" target="_blank" rel="noopener">open full size ↗</a>
+      </figcaption>
+    </figure>
+
+  </section>
+
+  <!-- ============================ PLATE 01 ============================ -->
+  <section class="wrap plate" id="one" style="--tint: var(--mass)">
+    <div class="plate-head">
+      <span class="eyebrow">Mechanism 01 · direction</span>
+      <h2>The Asymmetric Derivation</h2>
+      <p class="claim">
+        The two directions on the axis are not opposites of one another.
+        <strong>Up is subtraction. Down is exclusion.</strong> Only one of them is free.
+      </p>
+    </div>
+
+    <figure class="fig">
+      <img src="img/asymmetric-derivation.png"
+           alt="Four-panel dark diagram: the asymmetric axis with a free upward arrow and a paid downward arrow; one logical form fanning out to five possible designs; three logical architectures merging into a wider one with a refused arrow to a single design; and a table of legal and refused operations.">
+      <figcaption>
+        <span>Fig. 1 — axis · the gap · the union law · what is refused</span>
+        <a href="img/asymmetric-derivation.png" target="_blank" rel="noopener">open full size ↗</a>
+      </figcaption>
+    </figure>
+
+    <div class="steps">
+      <div class="step">
+        <h3>Both directions move, only one is cheap</h3>
+        <p>You can abstract a built mechanism, and you can build from an abstract one. The difference
+        shows up when you ask what each move <b>costs</b> — and the costs are nothing alike.</p>
+      </div>
+      <div class="step">
+        <h3>Going up is subtraction</h3>
+        <p>To turn a mechanism into a general statement you delete the parts that were local to it:
+        the material, the tolerance, the supplier. You don't have to learn anything to delete them,
+        so the move is free and available immediately.</p>
+        <p>What you drop isn't stored anywhere. The general statement is a <b>summary of work, not
+        the work</b>, which is why you can't run the move backwards later.</p>
+      </div>
+      <div class="step">
+        <h3>Going down has to be paid for</h3>
+        <p>A design is a set of commitments, and each commitment rules out every other version the
+        general statement would have allowed equally. Nothing inside the abstract layer can choose
+        between them — it was built to be indifferent.</p>
+        <p>So the ruling-out has to come from outside: a load that breaks one option, a cost that
+        kills another, a measurement that eliminates a third. <b>Evidence is what you pay with.</b></p>
+      </div>
+      <div class="step">
+        <h3>The gap in between</h3>
+        <p>One logical statement fits a whole family of real designs. That family is the room you
+        still have to move in, and its size is the whole substance of design work.</p>
+        <p>Keeping the statement free of implementation keeps the family large, which is the only
+        reason the trade-offs are still visible. Each commitment shrinks it — including options
+        nobody has looked at yet.</p>
+      </div>
+      <div class="step">
+        <h3>Combining abstractions only widens them</h3>
+        <p>Merge several high-level models without new information and all that survives is what they
+        agree on. Everything they disagree about is dropped, because dropping is the only free move.</p>
+        <p>The merged statement therefore allows <b>every design that any of the inputs allowed</b>.
+        It covers more and decides less. A stack of abstractions isn't a nearly-finished design; it's
+        a broader permission.</p>
+      </div>
+      <div class="step">
+        <h3>Two ways this goes wrong</h3>
+        <p><b>All the way up:</b> models get generalized, merged and re-merged. Everything stays true,
+        nothing gets decided, and no design is ever produced.</p>
+        <p><b>Straight down:</b> the design is written in one stroke before anything has been tested,
+        so every later mistake is found after the whole structure depends on it.</p>
+      </div>
+      <div class="step">
+        <h3>What follows</h3>
+        <p>Stay general for as long as staying general is free. Spend that room only when something
+        real has eliminated specific alternatives. When two groups disagree about a design, adding
+        another layer of abstraction raises the permission and settles nothing — the disagreement is
+        about which option to kill, and nothing upstream can kill it.</p>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <span class="lab">Takeaway</span>
+      <p>You can always compress many designs into one statement for free. You can never expand one
+      statement into a design without paying, and you can never stack statements into a sharper one
+      at all.</p>
+    </div>
+  </section>
+
+  <!-- ============================ PLATE 02 ============================ -->
+  <section class="wrap plate" id="two" style="--tint: var(--gold)">
+    <div class="plate-head">
+      <span class="eyebrow">Mechanism 02 · price</span>
+      <h2>The Funded Descent</h2>
+      <p class="claim">
+        Evidence is the currency. <strong>How far down you are when you spend it is the price.</strong>
+        Order is the only part you control.
+      </p>
+    </div>
+
+    <figure class="fig">
+      <img src="img/funded-descent.png"
+           alt="Four-panel dark diagram: a staircase from D0 to D4 where each riser is a verdict funded by new data, with shrinking trade-space bars and growing error-price bars; the illegal slide straight to a full specification; the refused climb back up; and the efficiency ratio with its three regimes.">
+      <figcaption>
+        <span>Fig. 2 — the staircase · the slide · the climb-back · the ratio</span>
+        <a href="img/funded-descent.png" target="_blank" rel="noopener">open full size ↗</a>
+      </figcaption>
+    </figure>
+
+    <div class="steps">
+      <div class="step">
+        <h3>One purchase, two terms</h3>
+        <p>Mechanism 01 says every step down has to be bought. This one adds the part that was
+        missing: the same piece of evidence <b>does not cost the same at every height</b>. Together
+        they say the descent isn't just slow — it has to be ordered.</p>
+      </div>
+      <div class="step">
+        <h3>How many commitments are already standing</h3>
+        <p>Early on, a mistake touches a few things and can be cut out and replaced. Later, the same
+        mistake breaks many commitments at once, because they have been locked to each other.</p>
+        <p>Specifying is the same act as raising that count. <b>You cannot add detail without raising
+        the price of being wrong.</b></p>
+      </div>
+      <div class="step">
+        <h3>You can't go back up to fix it</h3>
+        <p>The instinct on finding a deep mistake is to return to the high-level model, correct it,
+        and come back down. That doesn't work: the model is a summary, not the structure, so fixing
+        it gives you a corrected sentence and not a corrected design.</p>
+        <p>The real route is to tear down what rests on the mistake and derive it again, which means
+        <b>re-buying every commitment above it</b> — including the ones that happened to be right.</p>
+      </div>
+      <div class="step">
+        <h3>A staircase, not a slide</h3>
+        <p>Each tread is a commitment and each riser is the evidence that paid for it. A new level of
+        detail opens only after the one under it has survived contact with something real.</p>
+        <p>A level that has survived becomes the surface the next level is checked against, so
+        settled work makes later mistakes <b>easier to spot and cheaper to fix</b>.</p>
+      </div>
+      <div class="step">
+        <h3>The ratio</h3>
+        <p>Efficiency here is <b>information gained ÷ options destroyed</b>. Both are countable: how
+        many alternatives you ruled out, and how many of those were ruled out by something you can
+        name.</p>
+        <p>Destroy faster than you learn and the design is asserted. Learn without ever destroying
+        and you never leave the free layer. Keeping them level is what earns the result.</p>
+      </div>
+      <div class="step">
+        <h3>Why the best design wasn't available at the top</h3>
+        <p>Seeing which version is best depends on the same contact that funds the commitments.
+        Before that, the differences that separate a good design from an adequate one aren't visible
+        yet. The ideal design wasn't missed at the start — <b>it didn't exist to be written</b>.</p>
+      </div>
+      <div class="step">
+        <h3>Working rules</h3>
+        <p>Settle every question at the earliest point where it still means something; cheap answers
+        are the only cheap ones you get. Open a new level of detail only against something you can
+        name. And treat a deferred decision as borrowing — it gets more expensive the later you take
+        it, and the easy repair isn't available.</p>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <span class="lab">Takeaway</span>
+      <p>Because the way back up is closed, the only defence against an unaffordable mistake is
+      buying each decision at the height where it is still cheap.</p>
+    </div>
+  </section>
+
+  <!-- ============================ PLATE 03 ============================ -->
+  <section class="wrap plate" id="three" style="--tint: var(--viol)">
+    <div class="plate-head">
+      <span class="eyebrow">Mechanism 03 · interior</span>
+      <h2>The Welded Interior</h2>
+      <p class="claim">
+        The first two describe the traffic between the layers. This one says what the layers are
+        made of: <strong>tested connections over territory still open</strong>.
+      </p>
+    </div>
+
+    <figure class="fig">
+      <img src="img/welded-interior.png"
+           alt="Four-panel dark diagram: a thin relation inside a large volume at the logical end versus a dense welded lattice inside a small one at the physical end; curves showing mass rising and volume falling as density rises; a crystal and a warehouse with identical link counts; and what density buys, including downward reorganization.">
+      <figcaption>
+        <span>Fig. 3 — the metric · both terms move · crystal vs warehouse · what density buys</span>
+        <a href="img/welded-interior.png" target="_blank" rel="noopener">open full size ↗</a>
+      </figcaption>
+    </figure>
+
+    <div class="steps">
+      <div class="step">
+        <h3>The measure</h3>
+        <p>Not size, not completeness, not how many rules are written down. It is <b>how many
+        connections have been tested and hold weight, divided by how much ground the structure still
+        covers</b>.</p>
+        <p>Two documents of the same length can be worlds apart: one is a warehouse of items sitting
+        near each other, the other is a crystal where every bond carries load.</p>
+      </div>
+      <div class="step">
+        <h3>Why the top layer is thin</h3>
+        <p>A logical architecture holds a few relations spread over an enormous range of possible
+        designs. Small top, huge bottom — by its own best quality it is the thinnest thing on the
+        axis.</p>
+        <p>That is exactly why it can't settle an argument between two implementations, and exactly
+        why it is still the right thing to hold: there is <b>room left for evidence to act on</b>.</p>
+      </div>
+      <div class="step">
+        <h3>Both halves move together</h3>
+        <p>Each piece of evidence does two things in one stroke: it welds a connection into place,
+        and it removes the options it just ruled out. Top goes up, bottom goes down.</p>
+        <p>So a finished design is not a more detailed version of the logical one. It is the
+        <b>same object with the ratio turned over</b>.</p>
+      </div>
+      <div class="step">
+        <h3>Counting is not weighing</h3>
+        <p>Writing a constraint into the model raises the cost of being wrong the moment it is
+        written. It adds strength only if something outside the model established it.</p>
+        <p>An unproven constraint is a line on a drawing: <b>it raises the price of error without
+        raising the chance of being right</b>.</p>
+      </div>
+      <div class="step">
+        <h3>The warehouse</h3>
+        <p>A design written top to bottom in one go spends the room at full rate and welds nothing.
+        It reviews well — every constraint stated, every interface named — and fails when something
+        moves, because <b>a connection that was never loaded has no known behaviour under load</b>.</p>
+      </div>
+      <div class="step">
+        <h3>Linked, or just listed</h3>
+        <p>Real systems don't open to requirements satisfied one at a time; several things have to
+        hold at once. A model can name every variable and still miss the relation tying them together.</p>
+        <p>The test is to pick one component, change it, and ask what else is forced to move. If the
+        answer is nothing, the constraints were <b>listed</b>, not linked.</p>
+      </div>
+      <div class="step">
+        <h3>What the density buys</h3>
+        <p>Past a point the ratio stops being a score and starts acting like weight. On contact, the
+        denser structure absorbs the thinner one's observations as special cases of what it has
+        already worked out; the thin one cannot do the reverse.</p>
+        <p>Everything built underneath has to resolve against those tested connections. That, and not
+        a position on an org chart, is what architectural authority actually is.</p>
+      </div>
+      <div class="step">
+        <h3>Working rules</h3>
+        <p>Measure the ratio, not the page count. Prefer testing a constraint you already have over
+        adding one you don't. Carry anything unproven as an assumption, because it is priced as
+        structure and behaves as a hole. And don't close off ground you aren't ready to test —
+        that's how a warehouse gets built.</p>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <span class="lab">Takeaway</span>
+      <p>The difference between a crystal and a warehouse never shows up in the constraint count,
+      because counting records what you wrote and only evidence records what holds.</p>
+    </div>
+  </section>
+
+  <!-- ============================ CLOSE ============================ -->
+  <section class="wrap close" id="together">
+    <span class="eyebrow">How the three fit</span>
+    <h2 style="font-family: var(--display); font-weight: 800; font-size: var(--step-3); letter-spacing: -0.02em; margin: 0.4rem 0 0;">One move, read three ways</h2>
+    <p class="claim">Each mechanism answers a different question about the same step down the axis.</p>
+
+    <div class="stack">
+      <div style="--tint: var(--mass)">
+        <span class="q">01 · which way, and what with</span>
+        <p><strong>Direction.</strong> Up is free and lossy; down has to be bought with evidence. Merging what you already hold never produces a design.</p>
+      </div>
+      <div style="--tint: var(--gold)">
+        <span class="q">02 · how much, and in what order</span>
+        <p><strong>Price.</strong> The same evidence is cheap early and expensive late, and the easy repair route is closed — so the order of steps is the whole defence.</p>
+      </div>
+      <div style="--tint: var(--viol)">
+        <span class="q">03 · what the result is made of</span>
+        <p><strong>Substance.</strong> Each purchase welds a connection and removes an option, so the structure grows denser as it descends — or hollow, if nothing was ever tested.</p>
+      </div>
+    </div>
+
+    <div class="rules">
+      <h3>The whole thing in four moves</h3>
+      <ol>
+        <li><b>Stay general while it's free.</b> Nothing is lost by holding the WHAT open, and options closed early are closed before anyone could judge them.</li>
+        <li><b>Buy each step.</b> One named piece of evidence per level of detail. Anything closed by argument alone has only been postponed, and it will be re-priced later.</li>
+        <li><b>Validate before you build on it.</b> A level that hasn't met reality isn't a foundation, it's an assumption with the whole design resting on it.</li>
+        <li><b>Check the ratio, not the volume.</b> What fraction of what you've written has actually been tested, against how much ground you've already given up.</li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">
+  Figures rendered from the three source theories · The Asymmetric Derivation · The Funded Descent · The Welded Interior
+</footer>
+</body>
+</html>
